@@ -184,7 +184,7 @@ void WiFlyDevice::waitForResponse(const char *toMatch) {
    */
    // Note: Never exits if the correct response is never found
    findInResponse(toMatch);
- 
+
 }
 
 
@@ -223,7 +223,7 @@ void WiFlyDevice::begin(boolean adhocMode) {
   DEBUG_LOG(1, "Entered WiFlyDevice::begin()");
 
   if (!bDifferentUart) SPIuart.begin();
-  reboot(); // Reboot to get device into known state
+  //reboot(); // Reboot to get device into known state
   //requireFlowControl();
   setConfiguration(adhocMode);
 }
@@ -439,9 +439,9 @@ void WiFlyDevice::setConfiguration(boolean adhocMode) {
   if(!adhocMode)
   {
 	sendCommand(F("set wlan auth 4"));
-	
+
 	sendCommand(F("set ip dhcp 1"));
-  } 
+  }
   else
   {
 	setAdhocParams();
@@ -460,7 +460,7 @@ void WiFlyDevice::setAdhocParams()
 {
 	// Disable Auto-connect
 	sendCommand(F("set wlan join 0"));
-	
+
 	// Disable Authentication for AdHoc Mode
 	sendCommand(F("set wlan auth 0"));
 	
@@ -472,9 +472,9 @@ void WiFlyDevice::setAdhocParams()
 //
 // TODO: Revaluate if this method is actually required. Perhaps the Join method can
 // do all of this, and use a internal Private variable to provide all the required parameters
-// 
+//
 boolean WiFlyDevice::createAdHocNetwork(const char *ssid)
-{	
+{
   /*
     Create and AdHoc network with the WiFly Shield.
    */
@@ -482,7 +482,7 @@ boolean WiFlyDevice::createAdHocNetwork(const char *ssid)
   DEBUG_LOG(1, "Entered WiFlyDevice::beginAdhoc()");
 
   reboot(); // Reboot to get device into known state
-  
+
   enterCommandMode();
 
   // Turn on Adhoc Mode
@@ -509,7 +509,7 @@ boolean WiFlyDevice::createAdHocNetwork(const char *ssid)
   //Ensures sucessful reboot. See requireFlowControl for more info.
   sendCommand(F("get uart"), false, "Flow=0x1");
   reboot();
-  
+
   //After rebooting, your AdHoc network will be available.
 }
 

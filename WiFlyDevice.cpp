@@ -566,12 +566,24 @@ boolean WiFlyDevice::join(const char *ssid, const char *passphrase, boolean isWP
 
 void WiFlyDevice::leave()
 {
+  /*
+  */
+  enterCommandMode();
+
   sendCommand(F("leave"), false);
+
+  uart->println("exit");
 }
 
 void WiFlyDevice::sleep()
 {
+  /*
+  */
+  enterCommandMode();
+
   sendCommand(F("sleep"), false);
+
+  uart->println("exit");
 }
 
 #define IP_ADDRESS_BUFFER_SIZE 16 // "255.255.255.255\0"

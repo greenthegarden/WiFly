@@ -580,9 +580,34 @@ void WiFlyDevice::sleep()
   /*
   */
   enterCommandMode();
-
   sendCommand(F("sleep"), false);
+  uart->println("exit");
+}
 
+void WiFlyDevice::setSleepTimer(unsigned long seconds)
+{
+  /*
+  */
+  // character buffer to support conversion of ints to char
+  char buf[8];
+//  buf[0] = '\0';
+  itoa(seconds, buf, 10);
+  enterCommandMode();
+  sendCommand(F("set sys sleep "),true);
+  sendCommand(buf);
+  uart->println("exit");
+}
+
+void WiFlyDevice::setWakeTimer(unsigned long seconds)
+{
+  /*
+  */
+  char buf[8];
+//  buf[0] = '\0';
+  itoa(seconds, buf, 10);
+  enterCommandMode();
+  sendCommand(F("set sys wake "),true);
+  sendCommand(buf);
   uart->println("exit");
 }
 

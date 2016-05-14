@@ -19,6 +19,8 @@ public:
 
   void leave();
   void sleep();
+  void setSleepTimer(unsigned long seconds);
+  void setWakeTimer(unsigned long seconds);
 
   boolean configure(byte option, unsigned long value);
 

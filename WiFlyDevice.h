@@ -18,11 +18,11 @@ public:
   boolean join(const char *ssid, const char *passphrase, boolean isWPA = true);
 
   void leave();
-  void sleep();
+  void setWakeTimer(unsigned long seconds = 120);
+  void sleep(unsigned long wakeIn = 120);
   void setSleepTimer(unsigned long seconds);
-  void setWakeTimer(unsigned long seconds);
 
-  boolean configure(byte option, unsigned long value);
+//  boolean configure(byte option, unsigned long value);
 
   long getTime();
 

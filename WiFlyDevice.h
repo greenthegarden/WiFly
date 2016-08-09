@@ -21,6 +21,7 @@ public:
   void setWakeTimer(unsigned long seconds = 120);
   void sleep(unsigned long wakeIn = 120);
   void setSleepTimer(unsigned long seconds);
+  void disableTimers();
 
 //  boolean configure(byte option, unsigned long value);
 

@@ -595,6 +595,9 @@ void WiFlyDevice::leave()
 void WiFlyDevice::setWakeTimer(unsigned long seconds)
 {
   /*
+     sets the automatic wake timer, where <value> is a decimal number
+     representing the number of seconds after which the module wakes from sleep.
+     Setting <value> to 0 disables.
   */
   DEBUG_LOG(1, "WiFlyDevice::setWakeTimer()...");
   char buf[8];
@@ -611,7 +614,7 @@ void WiFlyDevice::sleep(unsigned long wakeIn)
   /*
   */
   DEBUG_LOG(1, "WiFlyDevice::sleep()...");
-  this->setWakeTimer(wakeIn);
+  setWakeTimer(wakeIn);
   enterCommandMode();
   sendCommand(F("sleep"), false);
   uart->println("exit");
@@ -620,7 +623,17 @@ void WiFlyDevice::sleep(unsigned long wakeIn)
 void WiFlyDevice::setSleepTimer(unsigned long seconds)
 {
   /*
-  */
+   Sets the sleep timer, where <value> is a decimal number.
+   The sleep timer is the time (in seconds) after which the module goes to sleep.
+   This timer is dis- abled during an open TCP connection.
+   When the TCP connection is closed, the module counts down and puts the module to sleep after <value> seconds.
+   Setting the value to 0 disables the sleep timer, and the module will not go to sleep based on this counter.
+   */
+
+   /*
+    Note: Be sure to set the wake timer before issuing the sleep timer if you are not using an external wake up signal;
+    otherwise, the module will never wake up.
+    */
   DEBUG_LOG(1, "WiFlyDevice::setSleepTimer()...");
   // character buffer to support conversion of ints to char
   char buf[8];
@@ -632,6 +645,11 @@ void WiFlyDevice::setSleepTimer(unsigned long seconds)
   uart->println("exit");
 }
 
+void WiFlyDevice::disableTimers()
+{
+  setWakeTimer(0);
+  setSleepTimer(0);
+}
 
 #define IP_ADDRESS_BUFFER_SIZE 16 // "255.255.255.255\0"
 

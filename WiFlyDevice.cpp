@@ -615,6 +615,7 @@ void WiFlyDevice::sleep(unsigned long wakeIn)
   */
   DEBUG_LOG(1, "WiFlyDevice::sleep()...");
   setWakeTimer(wakeIn);
+  delay(100);
   enterCommandMode();
   sendCommand(F("sleep"), false);
   uart->println("exit");

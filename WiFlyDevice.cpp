@@ -5,9 +5,8 @@
 
 #include "Debug.h"
 
-
-boolean WiFlyDevice::findInResponse(const char *toMatch, unsigned int timeOut = 1000)
-{
+boolean WiFlyDevice::findInResponse(const char *toMatch,
+                                    unsigned int timeOut = 1000) {
   /*
 
   */
@@ -68,10 +67,7 @@ boolean WiFlyDevice::findInResponse(const char *toMatch, unsigned int timeOut = 
   return true;
 }
 
-
-
-boolean WiFlyDevice::responseMatched(const char *toMatch)
-{
+boolean WiFlyDevice::responseMatched(const char *toMatch) {
   /*
   */
   boolean matchFound = true;
@@ -87,7 +83,7 @@ boolean WiFlyDevice::responseMatched(const char *toMatch)
       }
       delay(1); // This seems to improve reliability slightly
     }
-    DEBUG_LOG(3,(char)uart->peek());
+    DEBUG_LOG(3, (char)uart->peek());
     if (uart->read() != toMatch[offset]) {
       matchFound = false;
       break;
@@ -96,14 +92,11 @@ boolean WiFlyDevice::responseMatched(const char *toMatch)
   return matchFound;
 }
 
-
-
 #define COMMAND_MODE_ENTER_RETRY_ATTEMPTS 5
 
 #define COMMAND_MODE_GUARD_TIME 250 // in milliseconds
 
-boolean WiFlyDevice::enterCommandMode(boolean isAfterBoot)
-{
+boolean WiFlyDevice::enterCommandMode(boolean isAfterBoot) {
   /*
   */
   DEBUG_LOG(1, "Entered WiFlyDevice::enterCommandMode()...");
@@ -113,7 +106,8 @@ boolean WiFlyDevice::enterCommandMode(boolean isAfterBoot)
   //       reliable so instead we now just ignore the errors from
   //       sending the "$$$" in command mode.
 
-  for (int retryCount = 0; retryCount < COMMAND_MODE_ENTER_RETRY_ATTEMPTS; retryCount++) {
+  for (int retryCount = 0; retryCount < COMMAND_MODE_ENTER_RETRY_ATTEMPTS;
+       retryCount++) {
 
     // At first I tried automatically performing the
     // wait-send-wait-send-send process twice before checking if it
@@ -166,8 +160,7 @@ boolean WiFlyDevice::enterCommandMode(boolean isAfterBoot)
   return false;
 }
 
-void WiFlyDevice::skipRemainderOfResponse()
-{
+void WiFlyDevice::skipRemainderOfResponse() {
   /*
   */
 
@@ -177,9 +170,7 @@ void WiFlyDevice::skipRemainderOfResponse()
   }
 }
 
-
-void WiFlyDevice::waitForResponse(const char *toMatch)
-{
+void WiFlyDevice::waitForResponse(const char *toMatch) {
   /*
   */
   // Note: Never exits if the correct response is never found
@@ -189,9 +180,7 @@ void WiFlyDevice::waitForResponse(const char *toMatch)
   findInResponse(toMatch);
 }
 
-
-
-WiFlyDevice::WiFlyDevice(SpiUartDevice& theUart) : SPIuart (theUart) {
+WiFlyDevice::WiFlyDevice(SpiUartDevice &theUart) : SPIuart(theUart) {
   /*
 
   Note: Supplied UART should/need not have been initialised first.
@@ -206,25 +195,22 @@ WiFlyDevice::WiFlyDevice(SpiUartDevice& theUart) : SPIuart (theUart) {
   serverConnectionActive = false;
 }
 
-// TODO: Create a constructor that allows a SpiUartDevice (or better a "Stream") to be supplied
+// TODO: Create a constructor that allows a SpiUartDevice (or better a "Stream")
+// to be supplied
 //       and/or allow the select pin to be supplied.
 
-
-void  WiFlyDevice::setUart(Stream* newUart)
-{
+void WiFlyDevice::setUart(Stream *newUart) {
   DEBUG_LOG(1, "Entered WiFlyDevice::setUart()");
   bDifferentUart = 1;
   uart = newUart;
 }
 
-void WiFlyDevice::begin()
-{
+void WiFlyDevice::begin() {
   DEBUG_LOG(1, "Entered WiFlyDevice::begin()");
   begin(false);
 }
 
-void WiFlyDevice::begin(boolean adhocMode)
-{
+void WiFlyDevice::begin(boolean adhocMode) {
   /*
   */
   DEBUG_LOG(1, "Entered WiFlyDevice::begin()");
@@ -233,15 +219,13 @@ void WiFlyDevice::begin(boolean adhocMode)
     DEBUG_LOG(2, "Using SPIuart");
     SPIuart.begin();
   }
-  //reboot(); // Reboot to get device into known state
-  //requireFlowControl();
+  // reboot(); // Reboot to get device into known state
+  // requireFlowControl();
   // removed setConfiguration use wiFly configured externally
   setConfiguration(adhocMode);
 }
 
 // TODO: Create a `begin()` that allows IP etc to be supplied.
-
-
 
 // #define SOFTWARE_REBOOT_RETRY_ATTEMPTS 5
 //
@@ -252,7 +236,8 @@ void WiFlyDevice::begin(boolean adhocMode)
 //
 //   DEBUG_LOG(1, "Entered WiFlyDevice::softwareReboot()");
 //
-//   for (int retryCount = 0; retryCount < SOFTWARE_REBOOT_RETRY_ATTEMPTS; retryCount++) {
+//   for (int retryCount = 0; retryCount < SOFTWARE_REBOOT_RETRY_ATTEMPTS;
+//   retryCount++) {
 //
 //     // TODO: Have the post-boot delay here rather than in enterCommandMode()?
 //
@@ -263,7 +248,8 @@ void WiFlyDevice::begin(boolean adhocMode)
 //     uart->println(F("reboot"));
 //
 //     // For some reason the full "*Reboot*" message doesn't always
-//     // seem to be received so we look for the later "*READY*" message instead.
+//     // seem to be received so we look for the later "*READY*" message
+//     instead.
 //
 //     // TODO: Extract information from boot? e.g. version and MAC address
 //
@@ -305,11 +291,9 @@ void WiFlyDevice::begin(boolean adhocMode)
 //   }
 // }
 
-
 boolean WiFlyDevice::sendCommand(const __FlashStringHelper *command,
-  boolean isMultipartCommand = false,
-  const char *expectedResponse = "AOK")
-{
+                                 boolean isMultipartCommand = false,
+                                 const char *expectedResponse = "AOK") {
   /*
   */
   DEBUG_LOG(1, "Entered WiFlyDevice::sendCommand()...");
@@ -330,16 +314,15 @@ boolean WiFlyDevice::sendCommand(const __FlashStringHelper *command,
       DEBUG_LOG(2, "  FAIL");
       return false;
     }
-    //waitForResponse(expectedResponse);
+    // waitForResponse(expectedResponse);
   }
   DEBUG_LOG(2, "  SUCCESS");
   return true;
 }
 
 boolean WiFlyDevice::sendCommand(const char *command,
-  boolean isMultipartCommand = false,
-  const char *expectedResponse = "AOK")
-{
+                                 boolean isMultipartCommand = false,
+                                 const char *expectedResponse = "AOK") {
   /*
   */
   DEBUG_LOG(1, "Entered WiFlyDevice::sendCommand");
@@ -359,12 +342,11 @@ boolean WiFlyDevice::sendCommand(const char *command,
       DEBUG_LOG(2, "  FAIL");
       return false;
     }
-    //waitForResponse(expectedResponse);
+    // waitForResponse(expectedResponse);
   }
   DEBUG_LOG(2, "  SUCCESS");
   return true;
 }
-
 
 // void WiFlyDevice::requireFlowControl()
 // {
@@ -419,8 +401,7 @@ boolean WiFlyDevice::sendCommand(const char *command,
 //   reboot();
 // }
 
-void WiFlyDevice::setConfiguration(boolean adhocMode)
-{
+void WiFlyDevice::setConfiguration(boolean adhocMode) {
   /*
   */
   DEBUG_LOG(1, "Entered WiFlyDevice::setConfiguration()");
@@ -435,31 +416,28 @@ void WiFlyDevice::setConfiguration(boolean adhocMode)
   //       with "set ip protocol <something>"
 
   // Set server port
-//  sendCommand(F("set ip localport "), true);
+  //  sendCommand(F("set ip localport "), true);
   // TODO: Handle numeric arguments correctly.
-//  uart->print(serverPort);
-//  sendCommand("");
+  //  uart->print(serverPort);
+  //  sendCommand("");
 
   // Turn off remote connect message
   sendCommand(F("set comm remote 0"));
 
-//  sendCommand(F("set t z 23"));
-//  sendCommand(F("set time address 129.6.15.28"));
-//  sendCommand(F("set time port 123"));
-//  sendCommand(F("set t e 15"));
+  //  sendCommand(F("set t z 23"));
+  //  sendCommand(F("set time address 129.6.15.28"));
+  //  sendCommand(F("set time port 123"));
+  //  sendCommand(F("set t e 15"));
 
   // CDT: Enable the DHCP mode again, if the shield
   // was last used in AdHoc mode we won't do things correctly without
   // these changes.
-  if(!adhocMode)
-  {
-    sendCommand(F("set wlan auth 4"));  // auth 4 = WPA2-PSK
-    sendCommand(F("set ip dhcp 1"));    // default dhcp mode
-//    sendCommand(F("set ip dhcp 3"));  // cached IP mode
-  }
-  else
-  {
-    setAdhocParams();
+  if (!adhocMode) {
+    sendCommand(F("set wlan auth 4")); // auth 4 = WPA2-PSK
+    sendCommand(F("set ip dhcp 1"));   // default dhcp mode
+    //    sendCommand(F("set ip dhcp 3"));  // cached IP mode
+  } else {
+    // setAdhocParams();
   }
   // Turn off status messages
   // sendCommand(F("set sys printlvl 0"));
@@ -485,8 +463,10 @@ void WiFlyDevice::setConfiguration(boolean adhocMode)
 // }
 //
 // //
-// // TODO: Revaluate if this method is actually required. Perhaps the Join method can
-// // do all of this, and use a internal Private variable to provide all the required parameters
+// // TODO: Revaluate if this method is actually required. Perhaps the Join
+// method can
+// // do all of this, and use a internal Private variable to provide all the
+// required parameters
 // //
 // boolean WiFlyDevice::createAdHocNetwork(const char *ssid)
 // {
@@ -547,7 +527,7 @@ boolean WiFlyDevice::join(const char *ssid) {
   if (sendCommand(ssid, false, "Associated!")) {
     // TODO: Extract information from complete response?
     // TODO: Change this to still work when server mode not active
-//    waitForResponse("Listen on ");
+    //    waitForResponse("Listen on ");
     waitForResponse("GW");
     skipRemainderOfResponse();
     DEBUG_LOG(1, "  SUCCESS");
@@ -557,9 +537,8 @@ boolean WiFlyDevice::join(const char *ssid) {
   return false;
 }
 
-
-boolean WiFlyDevice::join(const char *ssid, const char *passphrase, boolean isWPA)
-{
+boolean WiFlyDevice::join(const char *ssid, const char *passphrase,
+                          boolean isWPA) {
   /*
   */
   // TODO: Handle escaping spaces/$ in passphrase and SSID
@@ -581,9 +560,7 @@ boolean WiFlyDevice::join(const char *ssid, const char *passphrase, boolean isWP
   return join(ssid);
 }
 
-
-void WiFlyDevice::leave()
-{
+void WiFlyDevice::leave() {
   /*
   */
   DEBUG_LOG(1, "WiFlyDevice::leave()...");
@@ -592,8 +569,7 @@ void WiFlyDevice::leave()
   uart->println("exit");
 }
 
-void WiFlyDevice::setWakeTimer(unsigned long seconds)
-{
+void WiFlyDevice::setWakeTimer(unsigned long seconds) {
   /*
      sets the automatic wake timer, where <value> is a decimal number
      representing the number of seconds after which the module wakes from sleep.
@@ -601,16 +577,15 @@ void WiFlyDevice::setWakeTimer(unsigned long seconds)
   */
   DEBUG_LOG(1, "WiFlyDevice::setWakeTimer()...");
   char buf[8];
-//  buf[0] = '\0';
+  //  buf[0] = '\0';
   itoa(seconds, buf, 10);
   enterCommandMode();
-  sendCommand(F("set sys wake "),true);
+  sendCommand(F("set sys wake "), true);
   sendCommand(buf);
   uart->println("exit");
 }
 
-void WiFlyDevice::sleep(unsigned long wakeIn)
-{
+void WiFlyDevice::sleep(unsigned long wakeIn) {
   /*
   */
   DEBUG_LOG(1, "WiFlyDevice::sleep()...");
@@ -621,41 +596,42 @@ void WiFlyDevice::sleep(unsigned long wakeIn)
   uart->println("exit");
 }
 
-void WiFlyDevice::setSleepTimer(unsigned long seconds)
-{
+void WiFlyDevice::setSleepTimer(unsigned long seconds) {
   /*
    Sets the sleep timer, where <value> is a decimal number.
-   The sleep timer is the time (in seconds) after which the module goes to sleep.
+   The sleep timer is the time (in seconds) after which the module goes to
+   sleep.
    This timer is dis- abled during an open TCP connection.
-   When the TCP connection is closed, the module counts down and puts the module to sleep after <value> seconds.
-   Setting the value to 0 disables the sleep timer, and the module will not go to sleep based on this counter.
+   When the TCP connection is closed, the module counts down and puts the module
+   to sleep after <value> seconds.
+   Setting the value to 0 disables the sleep timer, and the module will not go
+   to sleep based on this counter.
    */
 
-   /*
-    Note: Be sure to set the wake timer before issuing the sleep timer if you are not using an external wake up signal;
-    otherwise, the module will never wake up.
-    */
+  /*
+   Note: Be sure to set the wake timer before issuing the sleep timer if you are
+   not using an external wake up signal;
+   otherwise, the module will never wake up.
+   */
   DEBUG_LOG(1, "WiFlyDevice::setSleepTimer()...");
   // character buffer to support conversion of ints to char
   char buf[8];
-//  buf[0] = '\0';
+  //  buf[0] = '\0';
   itoa(seconds, buf, 10);
   enterCommandMode();
-  sendCommand(F("set sys sleep "),true);
+  sendCommand(F("set sys sleep "), true);
   sendCommand(buf);
   uart->println("exit");
 }
 
-void WiFlyDevice::disableTimers()
-{
+void WiFlyDevice::disableTimers() {
   setWakeTimer(0);
   setSleepTimer(0);
 }
 
 #define IP_ADDRESS_BUFFER_SIZE 16 // "255.255.255.255\0"
 
-const char * WiFlyDevice::ip()
-{
+const char *WiFlyDevice::ip() {
   /*
 
   The return value is intended to be dropped directly
@@ -692,7 +668,7 @@ const char * WiFlyDevice::ip()
   // in the loop. (Which should never happen anyway.)
   // And hopefully this prevents us from failing completely if
   // there's a mistake above.
-  ip[IP_ADDRESS_BUFFER_SIZE-1] = '\x00';
+  ip[IP_ADDRESS_BUFFER_SIZE - 1] = '\x00';
 
   // This should skip the remainder of the output.
   // TODO: Handle this better?
@@ -706,7 +682,7 @@ const char * WiFlyDevice::ip()
   // now we don't check the response.
   // TODO: Fix this
   uart->println("exit");
-  //sendCommand("exit", false, "EXIT");
+  // sendCommand("exit", false, "EXIT");
 
   return ip;
 }
@@ -743,11 +719,9 @@ const char * WiFlyDevice::ip()
 //   return true;
 // }
 
-
 #define TIME_SIZE 11 // 1311006129
 
-long WiFlyDevice::getTime()
-{
+long WiFlyDevice::getTime() {
 
   /*
   Returns the time based on the NTP settings and time zone.
@@ -755,11 +729,12 @@ long WiFlyDevice::getTime()
 
   char newChar;
   byte offset = 0;
-  char buffer[TIME_SIZE+1];
+  char buffer[TIME_SIZE + 1];
 
   enterCommandMode();
 
-  //sendCommand("time"); // force update if it's not already updated with NTP server
+  // sendCommand("time"); // force update if it's not already updated with NTP
+  // server
   sendCommand(F("show t t"), false, "RTC=");
 
   // copy the time from the response into our buffer
@@ -770,7 +745,7 @@ long WiFlyDevice::getTime()
       buffer[offset++] = newChar;
     }
   }
-  buffer[offset]=0;
+  buffer[offset] = 0;
   // This should skip the remainder of the output.
   // TODO: Handle this better?
   waitForResponse("<");
@@ -781,13 +756,10 @@ long WiFlyDevice::getTime()
   // now we don't check the response.
   // TODO: Fix this
   uart->println(F("exit"));
-  //sendCommand(F("exit"), false, "EXIT");
-
+  // sendCommand(F("exit"), false, "EXIT");
 
   return strtol(buffer, NULL, 0);
 }
-
-
 
 // Preinstantiate required objects
 SpiUartDevice SpiSerial;

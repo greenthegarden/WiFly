@@ -443,7 +443,7 @@ void WiFlyDevice::setConfiguration(boolean adhocMode)
   if(!adhocMode)
   {
 //    sendCommand(F("set wlan auth 4"));  // auth 4 = WPA2-PSK
-//    sendCommand(F("set ip dhcp 1"));    // default dhcp mode
+    sendCommand(F("set ip dhcp 1"));    // default dhcp mode
 //    sendCommand(F("set ip dhcp 3"));  // cached IP mode
   }
   else
@@ -569,9 +569,7 @@ void WiFlyDevice::leave()
   /*
   */
   enterCommandMode();
-
   sendCommand(F("leave"), false);
-
   uart->println("exit");
 }
 

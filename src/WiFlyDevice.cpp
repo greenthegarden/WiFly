@@ -432,7 +432,6 @@ void WiFlyDevice::setConfiguration(boolean adhocMode) {
   // CDT: Enable the DHCP mode again, if the shield
   // was last used in AdHoc mode we won't do things correctly without
   // these changes.
-<<<<<<< HEAD:src/WiFlyDevice.cpp
   if(!adhocMode)
   {
 //    sendCommand(F("set wlan auth 4"));  // auth 4 = WPA2-PSK
@@ -442,14 +441,6 @@ void WiFlyDevice::setConfiguration(boolean adhocMode) {
   else
   {
     setAdhocParams();
-=======
-  if (!adhocMode) {
-    sendCommand(F("set wlan auth 4")); // auth 4 = WPA2-PSK
-    sendCommand(F("set ip dhcp 1"));   // default dhcp mode
-    //    sendCommand(F("set ip dhcp 3"));  // cached IP mode
-  } else {
-    // setAdhocParams();
->>>>>>> 25fdef022f30b5cf60d5958efe379ec273ba374c:WiFlyDevice.cpp
   }
   // Turn off status messages
   // sendCommand(F("set sys printlvl 0"));

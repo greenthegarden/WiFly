@@ -34,8 +34,8 @@
 // TODO: Handle configuration better
 // SC16IS750 register values
 struct SPI_UART_cfg {
-  char DataFormat;
-  char Flow;
+  unsigned char DataFormat;
+  unsigned char Flow;
 };
 
 struct SPI_UART_cfg SPI_Uart_config = {
